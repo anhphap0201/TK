@@ -5,3 +5,5 @@ server/data/*.db-wal
 server/data/*.db-shm
 .DS_Store
 *.log
+docs/*.docx
+docs/*.xlsx
