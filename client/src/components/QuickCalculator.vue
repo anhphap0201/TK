@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Calculator } from 'lucide-vue-next';
-import { formatVND, formatNumber } from '../api';
+import { formatVND } from '../api';
 import TierBreakdownTable from './TierBreakdownTable.vue';
 
 const DEFAULT_TARIFFS = [
@@ -61,34 +60,34 @@ const calculation = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="border-b border-slate-100 pb-4">
-      <h3 class="font-extrabold text-slate-900 text-base">
+  <div class="space-y-5">
+    <div class="border-b border-[#EAEAEA] pb-3">
+      <h3 class="font-semibold text-[#171717] text-base">
         Công Cụ Tính Nhanh Tiền Điện Bậc Thang
       </h3>
-      <p class="text-xs text-slate-400 mt-0.5">
-        Ước tính số tiền thanh toán tức thì theo biểu giá 6 bậc lũy kế EVN hiện hành (VAT 8%)
+      <p class="text-xs text-[#737373] mt-0.5">
+        Ước tính số tiền thanh toán theo biểu giá 6 bậc lũy kế EVN hiện hành (VAT 8%)
       </p>
     </div>
 
     <!-- Thẻ Tổng Tiền Nổi Bật Tức Thì -->
-    <div class="bg-[#0099ff]/10 border border-[#0099ff]/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="bg-white border border-[#EAEAEA] rounded-lg p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
       <div>
-        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider block">Ước tính thành tiền</span>
-        <span class="text-xs text-slate-500">Đã bao gồm tiền điện sinh hoạt và 8% thuế VAT</span>
+        <span class="text-xs font-medium text-[#737373] uppercase tracking-wider block">Ước tính thành tiền</span>
+        <span class="text-xs text-[#A3A3A3]">Đã bao gồm tiền điện sinh hoạt và 8% thuế VAT</span>
       </div>
       <div class="text-right">
-        <span class="text-3xl font-black text-[#0099ff] font-mono tabular-nums tracking-tight block">
+        <span class="text-2xl font-bold text-[#171717] font-mono tabular-nums tracking-tight block">
           {{ formatVND(calculation.total) }}
         </span>
       </div>
     </div>
 
     <!-- Ô nhập kWh và presets -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-slate-50/70 p-5 rounded-2xl border border-slate-100">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center bg-[#FAFAFA] p-4 rounded-lg border border-[#EAEAEA]">
       <div>
-        <label for="quick-kwh-input" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-          Nhập điện năng tiêu thụ (kWh)
+        <label for="quick-kwh-input" class="block text-xs font-medium text-[#171717] uppercase tracking-wider mb-1.5">
+          Nhập sản lượng tiêu thụ (kWh)
         </label>
         <div class="relative">
           <input
@@ -97,27 +96,27 @@ const calculation = computed(() => {
             type="number"
             min="0"
             step="1"
-            class="w-full pl-4 pr-16 py-3 rounded-2xl border border-slate-200 font-mono text-2xl font-black text-slate-900 bg-white focus-visible:ring-3 focus-visible:ring-[#0099ff]/20 focus-visible:border-[#0099ff] focus-visible:outline-none tabular-nums"
+            class="w-full pl-3 pr-14 py-2 rounded-md border border-[#EAEAEA] font-mono text-xl font-bold text-[#171717] bg-white focus:border-[#171717] focus:outline-none tabular-nums"
             placeholder="0"
           />
-          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono font-medium text-[#737373]">
             kWh
           </span>
         </div>
       </div>
 
       <div>
-        <span class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
+        <span class="block text-xs font-medium text-[#171717] uppercase tracking-wider mb-2">
           Mức tiêu thụ phổ biến:
         </span>
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-1.5">
           <button
             v-for="preset in quickPresets"
             :key="preset"
             type="button"
             @click="kwhInput = preset"
-            :class="kwhInput === preset ? 'bg-[#0099ff] text-white font-bold shadow-xs' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'"
-            class="px-3.5 py-1.5 rounded-xl border text-xs font-mono font-semibold transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#0099ff] focus-visible:outline-none"
+            :class="kwhInput === preset ? 'bg-[#171717] text-white font-medium border-[#171717]' : 'bg-white text-[#171717] border-[#EAEAEA] hover:bg-[#FAFAFA]'"
+            class="px-2.5 py-1 rounded-md border text-xs font-mono transition-colors cursor-pointer"
           >
             {{ preset }}&nbsp;kWh
           </button>
@@ -126,7 +125,7 @@ const calculation = computed(() => {
     </div>
 
     <!-- Bảng phân rã 6 bậc -->
-    <div class="pt-2">
+    <div class="pt-1">
       <TierBreakdownTable :calculation="calculation" />
     </div>
   </div>

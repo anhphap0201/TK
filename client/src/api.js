@@ -23,8 +23,11 @@ export const api = {
   }),
 
   // Customer portal data
-  getCustomerData: (identifier, phone = null) => {
-    const qs = phone ? `?phone=${encodeURIComponent(phone)}` : '';
+  getCustomerData: (identifier, phone = null, isAdmin = false) => {
+    const params = new URLSearchParams();
+    if (phone) params.set('phone', phone);
+    if (isAdmin) params.set('admin', 'true');
+    const qs = params.toString() ? `?${params.toString()}` : '';
     return request(`/readings/customer/${encodeURIComponent(identifier)}${qs}`);
   },
 
@@ -43,6 +46,14 @@ export const api = {
   deleteReading: (id) => request(`/readings/${id}`, { method: 'DELETE' }),
 
   // Payments
+  createPayosUrl: (readingId, returnUrl, cancelUrl) => request('/payment/create-payos-url', {
+    method: 'POST',
+    body: JSON.stringify({ reading_id: readingId, return_url: returnUrl, cancel_url: cancelUrl }),
+  }),
+  verifyPayosPayment: (orderCode, readingId) => request('/payment/verify-payos', {
+    method: 'POST',
+    body: JSON.stringify({ orderCode, reading_id: readingId }),
+  }),
   createVnpayUrl: (readingId, returnUrl) => request('/payment/create-vnpay-url', {
     method: 'POST',
     body: JSON.stringify({ reading_id: readingId, return_url: returnUrl }),
@@ -64,6 +75,13 @@ export const api = {
 
   // Calculator preview
   previewCalculation: (data) => request('/readings/calculate-preview', { method: 'POST', body: JSON.stringify(data) }),
+
+  // Stats & Dashboard
+  getDashboardStats: (year = null) => {
+    const qs = year ? `?year=${encodeURIComponent(year)}` : '';
+    return request(`/stats/dashboard${qs}`);
+  },
+  getPeriodDetail: (period) => request(`/stats/period/${encodeURIComponent(period)}`),
 
   // Backup
   exportDataUrl: () => `${API_BASE}/backup/export`,

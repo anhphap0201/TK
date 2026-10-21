@@ -37,13 +37,17 @@ readingsRouter.get('/customer/:identifier', (req, res) => {
 
     const { tariffs, vatRate } = getCurrentTariffsAndVat();
     const phoneQuery = req.query.phone ? String(req.query.phone).trim() : null;
+    const adminQuery = req.query.admin === 'true' || req.headers['x-admin-token'] || req.headers['authorization'];
 
-    // Kiểm tra số điện thoại:
-    // Nếu có phone query và khớp với customer.phone thì đã xác thực đầy đủ
+    // Kiểm tra quyền truy cập:
+    // 1. Quản trị viên (admin=true) có toàn quyền xem lịch sử và thông số cá nhân
+    // 2. Khách hàng chính chủ (xác thực số điện thoại)
     const isAuthenticated = Boolean(
-      phoneQuery && customer.phone && (
-        phoneQuery === customer.phone.trim() ||
-        phoneQuery.replace(/\D/g, '') === customer.phone.replace(/\D/g, '')
+      adminQuery || (
+        phoneQuery && customer.phone && (
+          phoneQuery === customer.phone.trim() ||
+          phoneQuery.replace(/\D/g, '') === customer.phone.replace(/\D/g, '')
+        )
       )
     );
 

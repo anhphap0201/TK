@@ -1,7 +1,8 @@
-# HƯỚNG DẪN VIẾT BỘ TEST CASE TỰ ĐỘNG (DÀNH CHO TESTER 2)
-## Phụ trách: Module Quản Trị Khách Hàng, Biểu Giá EVN & Tính Toán Tiền Điện
+# HƯỚNG DẪN VIẾT BỘ TEST CASE TỰ ĐỘNG
+## Dành cho Tester 2: Bùi Văn Đại (MSV: 23010366)
+### Phụ trách: Module Quản Trị Khách Hàng, Biểu Giá EVN & Tính Toán Tiền Điện
 
-Tài liệu này hướng dẫn chi tiết cho thành viên thứ 2 trong nhóm cách viết file kiểm thử tự động `server/test/admin_tariffs.test.js` để kiểm thử các ca kiểm thử thuộc phần **Admin & Tính toán** theo đúng tài liệu [`docs/Test_Cases_Chi_Tiet.md`](../docs/Test_Cases_Chi_Tiet.md).
+Tài liệu này hướng dẫn chi tiết cho Bùi Văn Đại (Tester 2) trong nhóm cách viết các file kiểm thử tự động thuộc thư mục `server/test/admin/` để kiểm thử các ca kiểm thử thuộc phần **Admin & Tính toán** theo đúng tài liệu [`docs/Test_Cases_Chi_Tiet.md`](../docs/Test_Cases_Chi_Tiet.md).
 
 ---
 

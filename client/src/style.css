@@ -2,8 +2,8 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    @apply bg-slate-50 text-slate-900 antialiased min-h-screen;
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    @apply bg-[#FAFAFA] text-[#171717] antialiased min-h-screen;
   }
 
   .tabular-nums {

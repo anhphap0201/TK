@@ -60,10 +60,10 @@ function renderChart() {
         {
           label: 'Sản lượng (kWh)',
           data: kwhValues,
-          backgroundColor: 'rgba(0, 153, 255, 0.75)',
-          borderColor: '#0099ff',
-          borderWidth: 1.5,
-          borderRadius: 6,
+          backgroundColor: '#171717',
+          borderColor: '#171717',
+          borderWidth: 1,
+          borderRadius: 2,
           yAxisID: 'yKwh',
           order: 2,
         },
@@ -71,13 +71,15 @@ function renderChart() {
           label: 'Tổng tiền (VNĐ)',
           data: costValues,
           type: 'line',
-          borderColor: '#f59e0b',
-          backgroundColor: 'rgba(245, 158, 11, 0.15)',
-          borderWidth: 2.5,
-          pointBackgroundColor: '#f59e0b',
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          tension: 0.3,
+          borderColor: '#B45309',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointBackgroundColor: '#B45309',
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 1.5,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          tension: 0.1,
           yAxisID: 'yCost',
           order: 1,
         },
@@ -93,13 +95,23 @@ function renderChart() {
       plugins: {
         legend: {
           position: 'top',
+          align: 'end',
           labels: {
-            boxWidth: 14,
-            font: { family: 'inherit', size: 12, weight: '500' },
+            boxWidth: 10,
+            boxHeight: 10,
+            font: { family: 'Geist, sans-serif', size: 11, weight: '500' },
+            color: '#737373',
+            usePointStyle: false,
           },
         },
         tooltip: {
-          padding: 10,
+          backgroundColor: '#171717',
+          titleColor: '#FFFFFF',
+          bodyColor: '#A3A3A3',
+          padding: 8,
+          cornerRadius: 4,
+          titleFont: { family: 'Geist, sans-serif', size: 12, weight: '600' },
+          bodyFont: { family: 'JetBrains Mono, monospace', size: 11 },
           callbacks: {
             label(context) {
               const label = context.dataset.label || '';
@@ -115,7 +127,8 @@ function renderChart() {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { font: { family: 'inherit', size: 11 } },
+          ticks: { font: { family: 'JetBrains Mono, monospace', size: 10 }, color: '#737373' },
+          border: { color: '#EAEAEA' },
         },
         yKwh: {
           type: 'linear',
@@ -124,13 +137,16 @@ function renderChart() {
           title: {
             display: true,
             text: 'Điện năng (kWh)',
-            font: { size: 11, weight: '600' },
+            font: { family: 'Geist, sans-serif', size: 10, weight: '500' },
+            color: '#737373',
           },
-          grid: { color: 'rgba(226, 232, 240, 0.8)' },
+          grid: { color: '#F0F0F0' },
           ticks: {
-            callback: (val) => `${val} kWh`,
-            font: { size: 11 },
+            callback: (val) => `${val}`,
+            font: { family: 'JetBrains Mono, monospace', size: 10 },
+            color: '#737373',
           },
+          border: { dash: [4, 4], color: '#EAEAEA' },
         },
         yCost: {
           type: 'linear',
@@ -139,13 +155,16 @@ function renderChart() {
           title: {
             display: true,
             text: 'Số tiền (VNĐ)',
-            font: { size: 11, weight: '600' },
+            font: { family: 'Geist, sans-serif', size: 10, weight: '500' },
+            color: '#737373',
           },
           grid: { drawOnChartArea: false },
           ticks: {
             callback: (val) => `${(val / 1000).toLocaleString('vi-VN')}k`,
-            font: { size: 11 },
+            font: { family: 'JetBrains Mono, monospace', size: 10 },
+            color: '#737373',
           },
+          border: { color: '#EAEAEA' },
         },
       },
     },
@@ -168,8 +187,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="w-full h-80 relative">
-    <div v-if="!monthlyData || monthlyData.length === 0" class="h-full flex items-center justify-center text-slate-400 text-sm">
+  <div class="w-full h-72 relative">
+    <div v-if="!monthlyData || monthlyData.length === 0" class="h-full flex items-center justify-center text-[#A3A3A3] text-xs">
       Chưa có đủ dữ liệu theo tháng để vẽ biểu đồ
     </div>
     <canvas v-show="monthlyData && monthlyData.length > 0" ref="canvasRef"></canvas>

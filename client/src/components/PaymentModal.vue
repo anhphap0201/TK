@@ -11,9 +11,32 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'payment-success']);
 
+const loadingPayos = ref(false);
 const loadingVnpay = ref(false);
 const loadingSimulate = ref(false);
 const errorMsg = ref('');
+
+async function handlePayPayos() {
+  if (!props.reading) return;
+  loadingPayos.value = true;
+  errorMsg.value = '';
+
+  try {
+    const currentOrigin = window.location.origin;
+    const returnUrl = `${currentOrigin}/?payos_status=PAID&paid_reading_id=${props.reading.id}`;
+    const cancelUrl = `${currentOrigin}/?payos_status=CANCEL&paid_reading_id=${props.reading.id}`;
+    const res = await api.createPayosUrl(props.reading.id, returnUrl, cancelUrl);
+
+    if (res.checkoutUrl) {
+      window.location.href = res.checkoutUrl;
+    } else {
+      throw new Error(res.error || 'Không nhận được đường dẫn thanh toán từ PayOS');
+    }
+  } catch (err) {
+    errorMsg.value = err.message || 'Lỗi khi tạo liên kết thanh toán PayOS';
+    loadingPayos.value = false;
+  }
+}
 
 async function handlePayVnpay() {
   if (!props.reading) return;
@@ -61,72 +84,101 @@ async function handleSimulate() {
     role="dialog"
     aria-modal="true"
     aria-labelledby="payment-modal-title"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
+    @click.self="$emit('close')"
   >
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+    <div class="bg-white rounded-lg border border-[#EAEAEA] w-full max-w-md overflow-hidden">
       <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div class="px-5 py-4 border-b border-[#EAEAEA] flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-2xl bg-[#0099ff]/10 text-[#0099ff] flex items-center justify-center">
-            <CreditCard class="w-5 h-5" aria-hidden="true" />
+          <div class="w-8 h-8 rounded-md bg-[#F5F5F5] text-[#171717] flex items-center justify-center border border-[#EAEAEA]">
+            <CreditCard class="w-4 h-4" aria-hidden="true" />
           </div>
           <div>
-            <h3 id="payment-modal-title" class="font-extrabold text-slate-900 text-base">
+            <h3 id="payment-modal-title" class="font-semibold text-[#171717] text-sm">
               Thanh Toán Tiền Điện
             </h3>
-            <p class="text-xs text-slate-400 font-mono">Kỳ {{ reading.period }} • {{ customer?.customer_code }}</p>
+            <p class="text-[11px] text-[#737373] font-mono">Kỳ {{ reading.period }} • {{ customer?.customer_code }}</p>
           </div>
         </div>
         <button
           @click="$emit('close')"
           aria-label="Đóng cửa sổ"
-          class="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-[#0099ff] focus-visible:outline-none"
+          class="p-1 rounded text-[#737373] hover:text-[#171717] hover:bg-[#F5F5F5] transition-colors cursor-pointer"
         >
-          <X class="w-5 h-5" aria-hidden="true" />
+          <X class="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 
-      <div class="p-6 space-y-5">
-        <div v-if="errorMsg" role="alert" class="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-2xl">
+      <div class="p-5 space-y-4">
+        <div v-if="errorMsg" role="alert" class="p-2.5 bg-[#FDEBEC] border border-[#F8D0D0] text-[#9F2F2D] text-xs rounded-md">
           {{ errorMsg }}
         </div>
 
-        <!-- Khối Số Tiền Hiện Đại -->
-        <div class="bg-slate-50/80 rounded-2xl p-5 border border-slate-100 text-center space-y-1">
-          <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+        <!-- Khối Số Tiền Flat -->
+        <div class="bg-[#FAFAFA] rounded-md p-4 border border-[#EAEAEA] text-center space-y-0.5">
+          <span class="text-[11px] text-[#737373] font-medium uppercase tracking-wider block">
             Tổng tiền thanh toán
           </span>
-          <div class="text-3xl font-extrabold text-[#0099ff] font-mono tabular-nums tracking-tight">
+          <div class="text-2xl font-bold text-[#171717] font-mono tabular-nums">
             {{ formatVND(reading.total_amount) }}
           </div>
-          <p class="text-xs text-slate-400">
-            Điện năng tiêu thụ: <strong class="text-slate-700 font-mono">{{ formatNumber(reading.kwh) }}&nbsp;kWh</strong>
+          <p class="text-xs text-[#737373]">
+            Sản lượng: <strong class="text-[#171717] font-mono font-medium">{{ formatNumber(reading.kwh) }}&nbsp;kWh</strong>
           </p>
         </div>
 
         <!-- Các Kênh Thanh Toán -->
-        <div class="space-y-3">
+        <div class="space-y-2.5">
+          <!-- Cổng PayOS VietQR -->
+          <button
+            type="button"
+            @click="handlePayPayos"
+            :disabled="loadingPayos || loadingVnpay || loadingSimulate"
+            class="w-full p-3.5 rounded-md border border-[#EAEAEA] hover:border-[#171717] bg-white hover:bg-[#FAFAFA] text-left flex items-center justify-between group transition-colors cursor-pointer"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-[#171717] text-white flex items-center justify-center font-bold text-[11px] font-mono">
+                QR
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-[#171717] text-xs">
+                    Cổng PayOS (VietQR)
+                  </span>
+                  <span class="px-1.5 py-0.2 rounded text-[10px] font-medium bg-[#EDF3EC] text-[#245E2A] border border-[#D3E2D1]">
+                    Khuyên dùng
+                  </span>
+                </div>
+                <span class="text-[11px] text-[#737373] block">
+                  Quét mã QR chuyển khoản liên ngân hàng tự động
+                </span>
+              </div>
+            </div>
+            <ExternalLink class="w-3.5 h-3.5 text-[#737373] group-hover:text-[#171717] shrink-0" aria-hidden="true" />
+          </button>
+
           <!-- Cổng VNPAY -->
           <button
             type="button"
             @click="handlePayVnpay"
-            :disabled="loadingVnpay || loadingSimulate"
-            class="w-full p-4 rounded-2xl border-2 border-[#0099ff] bg-white hover:bg-[#0099ff]/5 text-left flex items-center justify-between group transition-all cursor-pointer focus-visible:ring-3 focus-visible:ring-[#0099ff]/30 focus-visible:outline-none"
+            :disabled="loadingPayos || loadingVnpay || loadingSimulate"
+            class="w-full p-3.5 rounded-md border border-[#EAEAEA] hover:border-[#171717] bg-white hover:bg-[#FAFAFA] text-left flex items-center justify-between group transition-colors cursor-pointer"
           >
-            <div class="flex items-center gap-3.5">
-              <div class="w-10 h-10 rounded-xl bg-[#0099ff] text-white flex items-center justify-center font-extrabold text-xs shadow-md shadow-[#0099ff]/20">
-                VNPAY
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded bg-[#F5F5F5] text-[#171717] border border-[#EAEAEA] flex items-center justify-center font-bold text-[10px] font-mono">
+                VN
               </div>
               <div>
-                <span class="block font-bold text-slate-900 text-sm group-hover:text-[#0099ff] transition-colors">
+                <span class="font-medium text-[#171717] text-xs block">
                   Cổng VNPAY Sandbox
                 </span>
-                <span class="text-xs text-slate-400">
+                <span class="text-[11px] text-[#737373] block">
                   Thẻ ATM nội địa, Quét mã QR, Visa/Mastercard
                 </span>
               </div>
             </div>
-            <ExternalLink class="w-4 h-4 text-[#0099ff] shrink-0" aria-hidden="true" />
+            <ExternalLink class="w-3.5 h-3.5 text-[#737373] group-hover:text-[#171717] shrink-0" aria-hidden="true" />
           </button>
 
           <!-- Mô Phỏng Nhanh -->
@@ -134,28 +186,25 @@ async function handleSimulate() {
             type="button"
             @click="handleSimulate"
             :disabled="loadingVnpay || loadingSimulate"
-            class="w-full p-3.5 rounded-2xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40 text-left flex items-center justify-between group transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none"
+            class="w-full p-3 rounded-md border border-dashed border-[#EAEAEA] hover:border-[#A3A3A3] hover:bg-[#FAFAFA] text-left flex items-center justify-between group transition-colors cursor-pointer text-xs"
           >
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                <CheckCircle2 class="w-4 h-4 text-emerald-600" aria-hidden="true" />
-              </div>
+            <div class="flex items-center gap-2.5">
+              <CheckCircle2 class="w-4 h-4 text-[#737373]" aria-hidden="true" />
               <div>
-                <span class="block font-bold text-slate-800 text-xs group-hover:text-emerald-700 transition-colors">
+                <span class="font-medium text-[#737373] group-hover:text-[#171717] block">
                   Mô phỏng thanh toán nhanh (Test Bypass)
                 </span>
-                <span class="text-[11px] text-slate-400">
+                <span class="text-[11px] text-[#A3A3A3] block">
                   Gạch nợ tức thì không cần qua cổng ngân hàng
                 </span>
               </div>
             </div>
-            <CheckCircle2 class="w-4 h-4 text-emerald-600 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
           </button>
         </div>
 
-        <div class="flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
-          <ShieldCheck class="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />
-          <span>Thanh toán an toàn, mã hóa 256-bit SSL</span>
+        <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#A3A3A3] pt-1">
+          <ShieldCheck class="w-3.5 h-3.5 text-[#A3A3A3]" aria-hidden="true" />
+          <span>Thanh toán bảo mật chuẩn SSL / TLS</span>
         </div>
       </div>
     </div>

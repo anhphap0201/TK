@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { X, RotateCcw, Sliders } from 'lucide-vue-next';
+import { X, RotateCcw } from 'lucide-vue-next';
 
 const props = defineProps({
   isOpen: Boolean,
@@ -54,35 +54,36 @@ function handleSave() {
     role="dialog"
     aria-modal="true"
     aria-labelledby="tariff-modal-title"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
+    @click.self="$emit('close')"
   >
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
-      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+    <div class="bg-white rounded-lg border border-[#EAEAEA] w-full max-w-xl max-h-[90vh] overflow-y-auto">
+      <div class="px-5 py-3.5 border-b border-[#EAEAEA] flex items-center justify-between sticky top-0 bg-white z-10">
         <div>
-          <h3 id="tariff-modal-title" class="font-extrabold text-slate-900 text-base">
+          <h3 id="tariff-modal-title" class="font-semibold text-[#171717] text-sm">
             Biểu Giá Điện Sinh Hoạt 6 Bậc
           </h3>
-          <p class="text-xs text-slate-400 font-medium">
+          <p class="text-xs text-[#737373]">
             Cấu hình đơn giá từng bậc và thuế GTGT
           </p>
         </div>
         <button
           @click="$emit('close')"
           aria-label="Đóng"
-          class="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-[#0099ff] focus-visible:outline-none"
+          class="p-1 rounded text-[#737373] hover:text-[#171717] hover:bg-[#F5F5F5] transition-colors cursor-pointer"
         >
-          <X class="w-5 h-5" aria-hidden="true" />
+          <X class="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 
-      <div class="p-6 space-y-5 text-xs">
+      <div class="p-5 space-y-4 text-xs">
         <!-- Thuế GTGT -->
-        <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-100 flex items-center justify-between">
+        <div class="bg-[#FAFAFA] p-3.5 rounded-lg border border-[#EAEAEA] flex items-center justify-between">
           <div>
-            <label for="vat-input" class="block font-bold text-slate-800">
+            <label for="vat-input" class="block font-medium text-[#171717]">
               Thuế Suất GTGT (VAT)
             </label>
-            <p class="text-[11px] text-slate-400">Tỷ lệ thuế tính trên tổng tiền điện trước thuế</p>
+            <p class="text-[11px] text-[#737373]">Tỷ lệ thuế tính trên tổng tiền điện trước thuế</p>
           </div>
           <div class="flex items-center gap-1.5">
             <input
@@ -92,26 +93,26 @@ function handleSave() {
               min="0"
               max="20"
               step="1"
-              class="w-16 px-2.5 py-1.5 rounded-xl border border-slate-200 font-mono text-center font-bold text-sm bg-white focus-visible:ring-2 focus-visible:ring-[#0099ff] focus-visible:outline-none"
+              class="w-16 px-2 py-1 rounded-md border border-[#EAEAEA] font-mono text-center font-medium text-xs bg-white text-[#171717] focus:border-[#171717] focus:outline-none"
             />
-            <span class="font-bold text-slate-600">%</span>
+            <span class="font-medium text-[#737373]">%</span>
           </div>
         </div>
 
         <!-- Bảng 6 Bậc -->
-        <div class="space-y-3">
-          <span class="block font-bold text-slate-700 uppercase tracking-wider">
+        <div class="space-y-2.5">
+          <span class="block font-medium text-[#171717] uppercase tracking-wider text-[11px]">
             Đơn giá từng bậc (VNĐ / kWh):
           </span>
-          <div class="space-y-2">
+          <div class="space-y-1.5">
             <div
               v-for="tier in localTariffs"
               :key="tier.tier"
-              class="flex items-center justify-between gap-3 p-3.5 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors"
+              class="flex items-center justify-between gap-3 p-3 rounded-lg border border-[#EAEAEA] bg-white hover:bg-[#FAFAFA] transition-colors"
             >
               <div class="flex-1">
-                <strong class="block text-slate-800 font-bold">{{ tier.name }}</strong>
-                <span class="text-[11px] text-slate-400">
+                <strong class="block text-[#171717] font-medium text-xs">{{ tier.name }}</strong>
+                <span class="text-[11px] text-[#737373] font-mono">
                   {{ tier.min_kwh }} - {{ tier.max_kwh ? tier.max_kwh + ' kWh' : 'trở lên' }}
                 </span>
               </div>
@@ -123,31 +124,31 @@ function handleSave() {
                   type="number"
                   min="0"
                   step="1"
-                  class="w-24 px-3 py-1.5 rounded-xl border border-slate-200 font-mono text-right font-bold text-xs bg-white focus-visible:ring-2 focus-visible:ring-[#0099ff] focus-visible:outline-none"
+                  class="w-24 px-2.5 py-1 rounded-md border border-[#EAEAEA] font-mono text-right font-medium text-xs bg-white text-[#171717] focus:border-[#171717] focus:outline-none"
                 />
-                <span class="text-slate-400 font-medium">đ/kWh</span>
+                <span class="text-[#737373]">đ/kWh</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="pt-2">
+        <div class="pt-1">
           <button
             type="button"
             @click="resetToDefault"
-            class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0099ff] hover:text-[#0088ee] transition-colors cursor-pointer"
+            class="inline-flex items-center gap-1 text-xs text-[#737373] hover:text-[#171717] transition-colors cursor-pointer"
           >
-            <RotateCcw class="w-3.5 h-3.5" aria-hidden="true" />
+            <RotateCcw class="w-3 h-3" aria-hidden="true" />
             <span>Khôi phục biểu giá chuẩn EVN</span>
           </button>
         </div>
       </div>
 
-      <div class="px-6 py-4 border-t border-slate-100 flex justify-end gap-2 sticky bottom-0 bg-white">
+      <div class="px-5 py-3 border-t border-[#EAEAEA] flex justify-end gap-2 sticky bottom-0 bg-white">
         <button
           type="button"
           @click="$emit('close')"
-          class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold cursor-pointer"
+          class="px-3 py-1.5 rounded-md border border-[#EAEAEA] text-[#737373] hover:text-[#171717] hover:bg-[#F5F5F5] text-xs font-medium cursor-pointer"
         >
           Hủy
         </button>
@@ -155,7 +156,7 @@ function handleSave() {
           type="button"
           @click="handleSave"
           :disabled="isSubmitting"
-          class="px-5 py-2 rounded-xl bg-[#0099ff] hover:bg-[#0088ee] text-white text-xs font-bold shadow-md shadow-[#0099ff]/20 cursor-pointer"
+          class="px-4 py-1.5 rounded-md bg-[#171717] hover:bg-[#262626] text-white text-xs font-medium cursor-pointer"
         >
           Lưu biểu giá
         </button>

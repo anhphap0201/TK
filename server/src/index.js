@@ -7,6 +7,7 @@ import { readingsRouter } from './routes/readings.js';
 import { paymentRouter } from './routes/payment.js';
 import { tariffsRouter } from './routes/tariffs.js';
 import { backupRouter } from './routes/backup.js';
+import { statsRouter } from './routes/stats.js';
 
 initDatabase();
 
@@ -29,6 +30,7 @@ app.use('/api/readings', readingsRouter);
 app.use('/api/payment', paymentRouter);
 app.use('/api/tariffs', tariffsRouter);
 app.use('/api/backup', backupRouter);
+app.use('/api/stats', statsRouter);
 
 app.listen(PORT, () => {
   console.log(`Backend Tra Cứu Tiền Điện running on http://localhost:${PORT}`);
