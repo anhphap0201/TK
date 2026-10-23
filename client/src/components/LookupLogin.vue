@@ -110,9 +110,6 @@ async function handleLookup() {
               <Search class="w-3.5 h-3.5" aria-hidden="true" />
             </div>
           </div>
-          <p class="text-[11px] text-neutral-400">
-            Nhập "admin" nếu muốn chuyển sang chế độ quản trị viên
-          </p>
         </div>
 
         <!-- Mật khẩu Quản trị (Hiện khi gõ 'admin') -->
@@ -127,7 +124,7 @@ async function handleLookup() {
             type="password"
             name="adminPassword"
             autocomplete="current-password"
-            placeholder="Nhập mật khẩu (Mặc định: admin123)"
+            placeholder="Nhập mật khẩu"
             class="w-full px-3 py-1.5 rounded-md border border-[#EAEAEA] font-mono text-xs bg-white focus-visible:border-neutral-900 focus-visible:ring-1 focus-visible:ring-neutral-900 focus-visible:outline-none"
           />
         </div>

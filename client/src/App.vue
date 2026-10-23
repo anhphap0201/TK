@@ -189,15 +189,6 @@ onMounted(() => {
               <span>Tính nhanh</span>
             </button>
 
-            <button
-              type="button"
-              @click="openTariffModal"
-              class="px-2.5 py-1.5 rounded-md border border-[#EAEAEA] bg-white hover:bg-[#F5F5F4] text-neutral-700 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <Settings class="w-3.5 h-3.5 text-neutral-500" aria-hidden="true" />
-              <span>Biểu giá</span>
-            </button>
-
             <!-- Nút Mở Trung Tâm Trực Quan Hóa Test Cases -->
             <a
               href="/testcases.html"
@@ -254,12 +245,24 @@ onMounted(() => {
             Đang phân tích dữ liệu cá nhân: <strong class="text-white font-mono">{{ customerData.customer.customer_code }} - {{ customerData.customer.full_name }}</strong>
           </span>
         </div>
-        <button
-          @click="currentView = 'ADMIN'"
-          class="px-2.5 py-1 rounded bg-white text-[#171717] hover:bg-[#F5F5F5] font-medium text-xs transition-colors cursor-pointer flex items-center gap-1"
-        >
-          <span>← Quay lại Admin Dashboard</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            @click="openTariffModal"
+            class="px-2.5 py-1 rounded border border-neutral-700 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-medium text-xs transition-colors cursor-pointer flex items-center gap-1.5"
+            title="Cấu hình biểu giá EVN"
+          >
+            <Settings class="w-3.5 h-3.5 text-neutral-400" aria-hidden="true" />
+            <span>Biểu giá EVN</span>
+          </button>
+          <button
+            type="button"
+            @click="currentView = 'ADMIN'"
+            class="px-2.5 py-1 rounded bg-white text-[#171717] hover:bg-[#F5F5F5] font-medium text-xs transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <span>← Quay lại Admin Dashboard</span>
+          </button>
+        </div>
       </div>
     </div>
 
