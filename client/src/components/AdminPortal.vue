@@ -40,11 +40,11 @@ const customerForm = ref({
 const showTariffModal = ref(false);
 const tariffsData = ref(null);
 
-const showVnpayModal = ref(false);
-const vnpayConfig = ref({
-  vnp_TmnCode: '',
-  vnp_HashSecret: '',
-  vnp_Url: '',
+const showPayosModal = ref(false);
+const payosConfig = ref({
+  clientId: '',
+  apiKey: '',
+  checksumKey: '',
 });
 
 async function fetchCustomers(page = 1) {
@@ -122,20 +122,20 @@ async function handleDeleteCustomer(item) {
   }
 }
 
-async function openVnpayConfig() {
+async function openPayosConfig() {
   try {
-    vnpayConfig.value = await api.getPaymentConfig();
-    showVnpayModal.value = true;
+    payosConfig.value = await api.getPayosConfig();
+    showPayosModal.value = true;
   } catch (err) {
     alert(err.message);
   }
 }
 
-async function handleSaveVnpay() {
+async function handleSavePayos() {
   try {
-    await api.updatePaymentConfig(vnpayConfig.value);
-    showVnpayModal.value = false;
-    alert('Đã cập nhật cấu hình VNPAY thành công!');
+    await api.updatePayosConfig(payosConfig.value);
+    showPayosModal.value = false;
+    alert('Đã cập nhật cấu hình PayOS thành công!');
   } catch (err) {
     alert(err.message);
   }
@@ -181,11 +181,11 @@ onMounted(() => {
 
       <div class="flex items-center gap-2 flex-wrap">
         <button
-          @click="openVnpayConfig"
+          @click="openPayosConfig"
           class="px-3 py-1.5 rounded-md border border-[#EAEAEA] text-[#171717] hover:bg-[#F5F5F5] text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
         >
           <CreditCard class="w-3.5 h-3.5 text-[#737373]" aria-hidden="true" />
-          <span>Cổng VNPAY</span>
+          <span>Cổng PayOS</span>
         </button>
 
         <button
@@ -466,52 +466,52 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Modal Cấu hình VNPAY -->
+    <!-- Modal Cấu hình PayOS (VietQR) -->
     <div
-      v-if="showVnpayModal"
+      v-if="showPayosModal"
       role="dialog"
       aria-modal="true"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
-      @click.self="showVnpayModal = false"
+      @click.self="showPayosModal = false"
     >
       <div class="bg-white rounded-lg border border-[#EAEAEA] w-full max-w-lg overflow-hidden p-5 space-y-4">
         <div class="flex items-center justify-between border-b border-[#EAEAEA] pb-3">
           <div class="flex items-center gap-2">
             <CreditCard class="w-4 h-4 text-[#171717]" aria-hidden="true" />
-            <h3 class="font-semibold text-[#171717] text-sm">Cấu hình Cổng VNPAY Sandbox</h3>
+            <h3 class="font-semibold text-[#171717] text-sm">Cấu hình Cổng PayOS (VietQR)</h3>
           </div>
-          <button @click="showVnpayModal = false" aria-label="Đóng" class="p-1 text-[#737373] hover:text-[#171717] rounded hover:bg-[#F5F5F5]">
+          <button @click="showPayosModal = false" aria-label="Đóng" class="p-1 text-[#737373] hover:text-[#171717] rounded hover:bg-[#F5F5F5]">
             <X class="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
-        <form @submit.prevent="handleSaveVnpay" class="space-y-3 text-xs">
+        <form @submit.prevent="handleSavePayos" class="space-y-3 text-xs">
           <div>
-            <label for="vnp-tmn" class="block font-medium text-[#171717] mb-1">VNPAY TMN CODE</label>
+            <label for="payos-client" class="block font-medium text-[#171717] mb-1">PAYOS CLIENT ID</label>
             <input
-              id="vnp-tmn"
-              v-model="vnpayConfig.vnp_TmnCode"
+              id="payos-client"
+              v-model="payosConfig.clientId"
               type="text"
               class="w-full px-3 py-1.5 rounded-md border border-[#EAEAEA] font-mono bg-white text-[#171717] focus:border-[#171717] focus:outline-none"
             />
           </div>
 
           <div>
-            <label for="vnp-secret" class="block font-medium text-[#171717] mb-1">VNPAY HASH SECRET</label>
+            <label for="payos-api-key" class="block font-medium text-[#171717] mb-1">PAYOS API KEY</label>
             <input
-              id="vnp-secret"
-              v-model="vnpayConfig.vnp_HashSecret"
+              id="payos-api-key"
+              v-model="payosConfig.apiKey"
               type="password"
               class="w-full px-3 py-1.5 rounded-md border border-[#EAEAEA] font-mono bg-white text-[#171717] focus:border-[#171717] focus:outline-none"
             />
           </div>
 
           <div>
-            <label for="vnp-url" class="block font-medium text-[#171717] mb-1">VNPAY PAYMENT URL</label>
+            <label for="payos-checksum" class="block font-medium text-[#171717] mb-1">PAYOS CHECKSUM KEY</label>
             <input
-              id="vnp-url"
-              v-model="vnpayConfig.vnp_Url"
-              type="text"
+              id="payos-checksum"
+              v-model="payosConfig.checksumKey"
+              type="password"
               class="w-full px-3 py-1.5 rounded-md border border-[#EAEAEA] font-mono bg-white text-[#171717] focus:border-[#171717] focus:outline-none"
             />
           </div>
@@ -519,7 +519,7 @@ onMounted(() => {
           <div class="flex justify-end gap-2 pt-1">
             <button
               type="button"
-              @click="showVnpayModal = false"
+              @click="showPayosModal = false"
               class="px-3 py-1.5 rounded-md border border-[#EAEAEA] text-[#737373] hover:text-[#171717] hover:bg-[#F5F5F5] font-medium cursor-pointer"
             >
               Đóng

@@ -83,9 +83,6 @@ export function initDatabase() {
   const defaultSettings = [
     { key: 'vat_rate', value: String(DEFAULT_VAT_RATE) },
     { key: 'admin_password', value: 'admin123' },
-    { key: 'vnp_tmn_code', value: 'CGXZLS0Z' },
-    { key: 'vnp_hash_secret', value: 'XNBCJFAKAZQSGTARRLTXNMVNILVAZKRQ' },
-    { key: 'vnp_url', value: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html' },
     { key: 'payos_client_id', value: '8a373872-a401-488c-8d6d-711cc600ea0c' },
     { key: 'payos_api_key', value: 'e7f4a56a-5b06-4edd-9929-de63796cd0be' },
     { key: 'payos_checksum_key', value: '6bc8a3513de774f8a8655c9ea9544c3186fec3b9f3881f25524dbb4fc54b8843' },

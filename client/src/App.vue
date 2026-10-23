@@ -103,7 +103,6 @@ async function handleSaveTariff(data) {
 
 async function checkPaymentReturn() {
   const urlParams = new URLSearchParams(window.location.search);
-  const responseCode = urlParams.get('vnp_ResponseCode');
   const payosStatus = urlParams.get('payos_status');
   const paidReadingId = urlParams.get('paid_reading_id');
   const orderCode = urlParams.get('orderCode');
@@ -139,40 +138,10 @@ async function checkPaymentReturn() {
     return;
   }
 
-  if (responseCode) {
-    const paramsObj = {};
-    for (const [k, v] of urlParams.entries()) {
-      paramsObj[k] = v;
-    }
-
-    try {
-      const res = await api.verifyVnpayReturn(paramsObj);
-      if (res.success) {
-        notification.value = {
-          type: 'success',
-          message: 'Thanh toán thành công qua cổng VNPAY!',
-        };
-        if (customerData.value?.customer) {
-          await loadCustomer(customerData.value.customer.customer_code, customerPhone.value);
-        }
-      } else {
-        notification.value = {
-          type: 'error',
-          message: res.error || 'Giao dịch VNPAY không thành công',
-        };
-      }
-    } catch (err) {
-      notification.value = {
-        type: 'error',
-        message: err.message || 'Lỗi khi xác minh giao dịch VNPAY',
-      };
-    }
-
-    window.history.replaceState({}, document.title, window.location.pathname);
-  } else if (paidReadingId) {
+  if (paidReadingId) {
     notification.value = {
       type: 'success',
-      message: 'Giao dịch thanh toán hoàn tất!',
+      message: 'Giao dịch thanh toán PayOS hoàn tất!',
     };
     window.history.replaceState({}, document.title, window.location.pathname);
   }
@@ -228,6 +197,17 @@ onMounted(() => {
               <Settings class="w-3.5 h-3.5 text-neutral-500" aria-hidden="true" />
               <span>Biểu giá</span>
             </button>
+
+            <!-- Nút Mở Trung Tâm Trực Quan Hóa Test Cases -->
+            <a
+              href="/testcases.html"
+              target="_blank"
+              class="px-2.5 py-1.5 rounded-md border border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-800 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              title="Mở Trung Tâm Trực Quan Hóa 41 Ca Kiểm Thử (EVN TestLab Visualizer)"
+            >
+              <span>⚡</span>
+              <span>Visualizer 41 Test</span>
+            </a>
           </div>
         </div>
       </div>
@@ -312,7 +292,7 @@ onMounted(() => {
           <span class="font-medium text-neutral-800">Hệ Thống Tra Cứu Tiền Điện</span> • Đại học Phenikaa
         </div>
         <div class="text-[11px] text-neutral-400 font-mono">
-          PayOS & VNPAY Sandbox • EVN 6 Tiers
+          Cổng thanh toán PayOS (VietQR) • EVN 6 Bậc
         </div>
       </div>
     </footer>

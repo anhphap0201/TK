@@ -116,9 +116,9 @@ def generate_data(num_customers=1000):
     # Seed settings nếu chưa có
     cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('vat_rate', '8')")
     cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('admin_password', 'admin123')")
-    cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('vnp_tmn_code', 'CGXZLS0Z')")
-    cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('vnp_hash_secret', 'XNBCJFAKAZQSGTARRLTXNMVNILVAZK стре')")
-    cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('vnp_url', 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html')")
+    cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('payos_client_id', '8a373872-a401-488c-8d6d-711cc600ea0c')")
+    cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('payos_api_key', 'e7f4a56a-5b06-4edd-9929-de63796cd0be')")
+    cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('payos_checksum_key', '6bc8a3513de774f8a8655c9ea9544c3186fec3b9f3881f25524dbb4fc54b8843')")
 
     # Xoá dữ liệu cũ nếu muốn tái tạo sạch
     cursor.execute("DELETE FROM readings")
@@ -230,7 +230,7 @@ def generate_data(num_customers=1000):
             else:
                 payment_status = 'PAID'
                 paid_at = f"{year:04d}-{month:02d}-25 10:30:00"
-                payment_method = random.choice(['VNPAY', 'VNPAY', 'TRANSFER', 'CASH'])
+                payment_method = random.choice(['PAYOS', 'PAYOS', 'TRANSFER', 'CASH'])
                 txn_id = f"TXN{year}{month:02d}{random.randint(100000, 999999)}"
 
             readings_data.append((

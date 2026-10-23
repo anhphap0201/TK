@@ -12,7 +12,6 @@ const props = defineProps({
 const emit = defineEmits(['close', 'payment-success']);
 
 const loadingPayos = ref(false);
-const loadingVnpay = ref(false);
 const loadingSimulate = ref(false);
 const errorMsg = ref('');
 
@@ -35,25 +34,6 @@ async function handlePayPayos() {
   } catch (err) {
     errorMsg.value = err.message || 'Lỗi khi tạo liên kết thanh toán PayOS';
     loadingPayos.value = false;
-  }
-}
-
-async function handlePayVnpay() {
-  if (!props.reading) return;
-  loadingVnpay.value = true;
-  errorMsg.value = '';
-
-  try {
-    const currentOrigin = window.location.origin;
-    const returnUrl = `${currentOrigin}/?paid_reading_id=${props.reading.id}`;
-    const res = await api.createVnpayUrl(props.reading.id, returnUrl);
-
-    if (res.paymentUrl) {
-      window.location.href = res.paymentUrl;
-    }
-  } catch (err) {
-    errorMsg.value = err.message || 'Lỗi khi tạo liên kết thanh toán VNPAY';
-    loadingVnpay.value = false;
   }
 }
 
@@ -134,7 +114,7 @@ async function handleSimulate() {
           <button
             type="button"
             @click="handlePayPayos"
-            :disabled="loadingPayos || loadingVnpay || loadingSimulate"
+            :disabled="loadingPayos || loadingSimulate"
             class="w-full p-3.5 rounded-md border border-[#EAEAEA] hover:border-[#171717] bg-white hover:bg-[#FAFAFA] text-left flex items-center justify-between group transition-colors cursor-pointer"
           >
             <div class="flex items-center gap-3">
@@ -158,34 +138,11 @@ async function handleSimulate() {
             <ExternalLink class="w-3.5 h-3.5 text-[#737373] group-hover:text-[#171717] shrink-0" aria-hidden="true" />
           </button>
 
-          <!-- Cổng VNPAY -->
-          <button
-            type="button"
-            @click="handlePayVnpay"
-            :disabled="loadingPayos || loadingVnpay || loadingSimulate"
-            class="w-full p-3.5 rounded-md border border-[#EAEAEA] hover:border-[#171717] bg-white hover:bg-[#FAFAFA] text-left flex items-center justify-between group transition-colors cursor-pointer"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded bg-[#F5F5F5] text-[#171717] border border-[#EAEAEA] flex items-center justify-center font-bold text-[10px] font-mono">
-                VN
-              </div>
-              <div>
-                <span class="font-medium text-[#171717] text-xs block">
-                  Cổng VNPAY Sandbox
-                </span>
-                <span class="text-[11px] text-[#737373] block">
-                  Thẻ ATM nội địa, Quét mã QR, Visa/Mastercard
-                </span>
-              </div>
-            </div>
-            <ExternalLink class="w-3.5 h-3.5 text-[#737373] group-hover:text-[#171717] shrink-0" aria-hidden="true" />
-          </button>
-
           <!-- Mô Phỏng Nhanh -->
           <button
             type="button"
             @click="handleSimulate"
-            :disabled="loadingVnpay || loadingSimulate"
+            :disabled="loadingPayos || loadingSimulate"
             class="w-full p-3 rounded-md border border-dashed border-[#EAEAEA] hover:border-[#A3A3A3] hover:bg-[#FAFAFA] text-left flex items-center justify-between group transition-colors cursor-pointer text-xs"
           >
             <div class="flex items-center gap-2.5">

@@ -54,20 +54,14 @@ export const api = {
     method: 'POST',
     body: JSON.stringify({ orderCode, reading_id: readingId }),
   }),
-  createVnpayUrl: (readingId, returnUrl) => request('/payment/create-vnpay-url', {
-    method: 'POST',
-    body: JSON.stringify({ reading_id: readingId, return_url: returnUrl }),
-  }),
-  verifyVnpayReturn: (vnpParams) => request('/payment/vnpay-return', {
-    method: 'POST',
-    body: JSON.stringify(vnpParams),
-  }),
   simulatePayment: (readingId) => request('/payment/simulate', {
     method: 'POST',
     body: JSON.stringify({ reading_id: readingId }),
   }),
-  getPaymentConfig: () => request('/payment/config'),
-  updatePaymentConfig: (data) => request('/payment/config', { method: 'PUT', body: JSON.stringify(data) }),
+  getPayosConfig: () => request('/payment/payos-config'),
+  updatePayosConfig: (data) => request('/payment/payos-config', { method: 'PUT', body: JSON.stringify(data) }),
+  getPaymentConfig: () => request('/payment/payos-config'),
+  updatePaymentConfig: (data) => request('/payment/payos-config', { method: 'PUT', body: JSON.stringify(data) }),
 
   // Tariffs
   getTariffs: () => request('/tariffs'),

@@ -3,7 +3,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
 def populate_test_cases():
-    excel_path = 'docs/Test_Case_Template.xlsx'
+    excel_path = 'docs/Test_Case.xlsx'
     wb = openpyxl.load_workbook(excel_path)
 
     thin_border = Border(
@@ -96,7 +96,7 @@ def populate_test_cases():
         ('Executive Dashboard', 'Trung tâm điều hành ngành điện tổng hợp 5 KPI Bento, 4 biểu đồ Chart.js và drill-down kỳ.'),
         ('Flat UI / Modern Minimal', 'Ngôn ngữ thiết kế phẳng, font Geist & JetBrains Mono, viền mờ #EAEAEA, nhãn màu pastel.'),
         ('PayOS VietQR', 'Cổng thanh toán sinh mã QR động chuẩn NAPAS 247 và tự động xác nhận webhook giao dịch.'),
-        ('VNPAY Sandbox', 'Môi trường giả lập cổng thanh toán trực tuyến qua thẻ ATM/IBank có mã băm bảo mật HMAC-SHA512.'),
+        ('PayOS Webhook', 'Cơ chế thông báo tự động (Instant Payment Notification) xác thực thanh toán thời gian thực.'),
         ('BVA', 'Boundary Value Analysis - Kỹ thuật phân tích giá trị biên tại ngưỡng chuyển bậc lũy kế.'),
         ('EP', 'Equivalence Partitioning - Kỹ thuật phân vùng tương đương dữ liệu hợp lệ và không hợp lệ.'),
         ('RTM', 'Requirements Traceability Matrix - Ma trận đối soát yêu cầu kỹ thuật với kịch bản kiểm thử.')
@@ -476,15 +476,6 @@ def populate_test_cases():
         {
             'cat': 'Thanh Toán Trực Tuyến (Payment)',
             'id': 'TC_PAY_001',
-            'desc': 'Tạo URL thanh toán VNPAY Sandbox có chữ ký băm bảo mật HMAC-SHA512',
-            'steps': '1. Gửi POST /api/payment/create-vnpay-url kèm mã kỳ hóa đơn chưa đóng tiền.',
-            'step_res': '1. Backend tính toán số tiền và cấu hình các trường VNPAY.\n2. Sinh chữ ký mã hóa HMAC-SHA512.',
-            'exp_res': 'Trả về đường link cổng VNPAY Sandbox hợp lệ với đầy đủ tham số và chữ ký vnp_SecureHash, sẵn sàng thanh toán.',
-            'status': 'Passed'
-        },
-        {
-            'cat': 'Thanh Toán Trực Tuyến (Payment)',
-            'id': 'TC_PAY_002',
             'desc': 'Tạo yêu cầu thanh toán PayOS và hiển thị mã VietQR chuẩn NAPAS 247',
             'steps': '1. Gửi POST /api/payment/create-payos-url kèm mã kỳ hóa đơn chưa đóng.',
             'step_res': '1. Tạo chữ ký HMAC-SHA256 gửi sang PayOS gateway.\n2. Nhận thông tin thanh toán từ PayOS.',
@@ -493,11 +484,20 @@ def populate_test_cases():
         },
         {
             'cat': 'Thanh Toán Trực Tuyến (Payment)',
+            'id': 'TC_PAY_002',
+            'desc': 'Xác minh thanh toán PayOS tự động qua Webhook / Callback',
+            'steps': '1. Gửi POST /api/payment/verify-payos với orderCode giao dịch vừa quét mã.\n2. Backend xác thực đối soát với hệ sinh thái PayOS.',
+            'step_res': '1. Xác thực chữ ký số HMAC-SHA256 từ PayOS.\n2. Cập nhật payment_status = PAID trong CSDL.',
+            'exp_res': 'Hóa đơn chuyển sang trạng thái "Đã thanh toán" với phương thức PAYOS, đồng bộ dữ liệu thời gian thực.',
+            'status': 'Passed'
+        },
+        {
+            'cat': 'Thanh Toán Trực Tuyến (Payment)',
             'id': 'TC_PAY_003',
-            'desc': 'Mô phỏng gạch nợ tức thì phục vụ kiểm thử nhanh (Test Bypass)',
-            'steps': '1. Bấm nút "Mô phỏng thanh toán VNPAY Sandbox" tại hóa đơn chưa đóng.\n2. Kiểm tra trạng thái hóa đơn.',
+            'desc': 'Mô phỏng gạch nợ PayOS tức thì phục vụ nghiệm thu nhanh (Test Bypass)',
+            'steps': '1. Bấm nút "Mô phỏng thanh toán nhanh (Test Bypass)" tại hóa đơn chưa đóng.\n2. Kiểm tra trạng thái hóa đơn.',
             'step_res': '1. Gửi POST /api/payment/simulate.\n2. Backend cập nhật trạng thái hóa đơn.',
-            'exp_res': 'Hóa đơn chuyển ngay sang trạng thái "Đã thanh toán" với mã giao dịch sinh tự động, đồng bộ dữ liệu thời gian thực.',
+            'exp_res': 'Hóa đơn chuyển ngay sang trạng thái "Đã thanh toán" với phương thức PAYOS và mã giao dịch sinh tự động.',
             'status': 'Passed'
         },
         {
@@ -608,7 +608,7 @@ def populate_test_cases():
     # Fill all 3 test sheets
     fill_test_sheet('Function Test Cases', 'Function Test Cases (Customer, Admin, Dashboard & Calculator)', None, func_cases)
     fill_test_sheet('Security_Performanc Test Cases', 'Security & Performance Test Cases', None, sec_cases)
-    fill_test_sheet('Other Test Cases ...', 'UI & Payment Test Cases', 'Kiểm thử cổng thanh toán trực tuyến (PayOS VietQR, VNPAY Sandbox, Test Bypass) và chuẩn hóa giao diện Flat UI', other_cases)
+    fill_test_sheet('Other Test Cases ...', 'UI & Payment Test Cases', 'Kiểm thử cổng thanh toán trực tuyến PayOS VietQR và chuẩn hóa giao diện Flat UI', other_cases)
 
     wb.save(excel_path)
     print(f'Successfully populated {len(func_cases)} functional cases, {len(sec_cases)} security/perf cases, and {len(other_cases)} other cases into {excel_path}!')

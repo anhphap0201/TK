@@ -16,8 +16,8 @@ Hệ thống **Tra cứu tiền điện sinh hoạt** và **Đóng tiền điệ
    - Bảng phân tích chi tiết từng bậc EVN và hỗ trợ chế độ In hoá đơn (Print-friendly).
 
 3. **Đóng tiền điện trực tuyến**:
-   - Tích hợp cổng thanh toán **VNPAY Sandbox** (chuẩn hoá đơn tiền điện qua thẻ ATM nội địa, QR ngân hàng, thẻ quốc tế).
-   - Hỗ trợ nút **Mô phỏng thanh toán nhanh (Quick Simulation)** để test nghiệp vụ chuyển trạng thái nợ cước mà không cần thẻ ngân hàng thật.
+   - Tích hợp cổng thanh toán **PayOS (VietQR)** (quét mã QR chuẩn NAPAS 247 chuyển khoản liên ngân hàng tự động nhận diện hóa đơn).
+   - Hỗ trợ nút **Mô phỏng thanh toán nhanh (Quick Simulation)** để test nghiệp vụ chuyển trạng thái nợ cước mà không cần app ngân hàng thật.
 
 4. **Biểu đồ xu hướng sử dụng điện**:
    - Biểu đồ kết hợp cột (kWh) và đường (VNĐ) theo từng tháng.
@@ -27,7 +27,7 @@ Hệ thống **Tra cứu tiền điện sinh hoạt** và **Đóng tiền điệ
    - Quản lý danh sách 1,000 khách hàng (tìm kiếm theo mã KH, họ tên, số điện thoại, mã công tơ; phân trang).
    - Thêm, sửa, xoá khách hàng.
    - Cấu hình biểu giá 6 bậc EVN & thuế VAT.
-   - Cấu hình tham số kết nối cổng VNPAY Sandbox (`vnp_TmnCode`, `vnp_HashSecret`, `vnp_Url`).
+   - Cấu hình tham số kết nối cổng thanh toán PayOS (`clientId`, `apiKey`, `checksumKey`).
 
 6. **Dữ liệu mẫu thực tế (Python Generator)**:
    - Script Python sinh tự động 1,000 khách hàng với lịch sử dùng điện ngẫu nhiên trong 4 năm.
